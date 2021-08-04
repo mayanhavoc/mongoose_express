@@ -21,7 +21,7 @@ mongoose.connect('mongodb://localhost:27017/farmStand', { useNewUrlParser: true,
 // .catch(e => {
 //     console.log(e)
 // })
-
+  
 const seedProducts = [
       {
           name: 'Fairy eggplant',
