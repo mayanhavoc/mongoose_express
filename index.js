@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override')
+const AppError = require('./AppError');
 
 const Product = require('./models/product');
 
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 
-const categories = ['fruit', 'vegetable', 'dairy'];
+const categories = ['fruit', 'vegetables', 'dairy'];
 
 app.get('/products', async (req, res) => {
     const { category } = req.query;
@@ -35,6 +36,7 @@ app.get('/products', async (req, res) => {
 })
 
 app.get('/products/new', (req, res) => {
+    throw new AppError('Not allowed', 401)
     res.render('products/new', { categories })
 })
 
@@ -44,15 +46,21 @@ app.post('/products',  async (req, res) => {
     res.redirect(`products/${newProduct._id}`)
 })
 
-app.get('/products/:id', async (req, res) => {
+app.get('/products/:id', async (req, res, next) => {
     const { id } = req.params;
     const product = await Product.findById(id);
+    if (!product) {
+        return next(new AppError('Product not found', 404));
+    }
     res.render('products/details', { product });
 })
 
-app.get('/products/:id/edit', async (req, res) => {
+app.get('/products/:id/edit', async (req, res, next) => {
     const { id } = req.params;
     const product = await Product.findById(id);
+    if (!product) {
+        return next(new AppError('Product not found', 404));
+    }
     res.render('products/edit', { product, categories })
 })
 
@@ -68,6 +76,11 @@ app.delete('/products/:id', async (req, res) => {
     res.redirect('/products');
 })
 
-app.listen(3000, ()=> {
-    console.log('Server running on Port 3000')
+app.use((err, req, res, next) => {
+    const { status=500, message="Something went wrong" } = err;
+    res.status(status).send(message);
+})
+
+app.listen(3001, ()=> {
+    console.log('Server running on Port 3001')
 })

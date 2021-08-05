@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Product = require('./models/product')
 
-mongoose.connect('mongodb://localhost:27017/farmStand', { useNewUrlParser: true, useUnifiedTopology:true})
+mongoose.connect('mongodb://localhost:27017/farmStand2', { useNewUrlParser: true, useUnifiedTopology:true})
 .then(() => {
     console.log('Mongo connection open.')
 })
@@ -26,7 +26,7 @@ const seedProducts = [
       {
           name: 'Fairy eggplant',
           price: 1.00,
-          category: 'vegetables '
+          category: 'vegetables'
       },
       {
           name: 'Organic goddess melon',
@@ -46,7 +46,7 @@ const seedProducts = [
       {
           name: 'Chocolate whole milk',
           price: 2.69,
-          category: 'diary'
+          category: 'dairy'
       },
 ]
 
